@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ModelInference\NPU\include
+  sources:
+    NPU:
+    - NN_ModelInference\NPU

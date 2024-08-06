@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ModelInference\Model\include
+  sources:
+    Model:
+    - NN_ModelInference\Model

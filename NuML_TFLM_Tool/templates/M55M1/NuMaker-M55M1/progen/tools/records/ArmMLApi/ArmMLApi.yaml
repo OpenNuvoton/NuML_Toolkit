@@ -1,0 +1,13 @@
+common:
+  includes:
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include
+  sources:
+    ArmMLApi:
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\Model.cpp
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\source\TensorFlowLiteMicro.cpp
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\PlatformMath.cpp
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\Profiler.cpp

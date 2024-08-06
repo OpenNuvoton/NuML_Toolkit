@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ModelInference\ProfilerCounter\include
+  sources:
+    ProfilerCounter:
+    - NN_ModelInference\ProfilerCounter

@@ -1,0 +1,15 @@
+common:
+  # Output - exe or lib
+  # output:
+  #     - exe
+  # Tools supported by this project - optional
+  tools_supported:
+      - make_gcc_arm
+      - uvision5_armc6
+  target:
+      - numaker-m55m1
+  includes:
+    - NN_ModelInference
+  sources:
+      Application:
+      - NN_ModelInference
