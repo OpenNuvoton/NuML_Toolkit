@@ -1,0 +1,4 @@
+howto
+1. open git bash and run following command
+
+./vela-3_10_0.exe ../mobilenet_v2_int8quant.tflite --accelerator-config=ethos-u55-256 --optimise Performance --config default_vela.ini --memory-mode=Shared_Sram --system-config=Ethos_U55_High_End_Embedded --output-dir=vela_output

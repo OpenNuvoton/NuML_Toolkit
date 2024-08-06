@@ -1,0 +1,17 @@
+howto
+1. open git bash and run following command
+
+./tvmc.exe compile --config config/default.json --target=ethos-u,cmsis-nn,c \
+             --target-ethos-u-accelerator_config=ethos-u55-256 \
+             --target-cmsis-nn-mcpu=cortex-m55 \
+             --target-c-mcpu=cortex-m55 \
+             --runtime=crt \
+             --executor=aot \
+             --executor-aot-interface-api=c \
+             --executor-aot-unpacked-api=1 \
+             --pass-config tir.usmp.enable=1 \
+             --pass-config tir.usmp.algorithm=hill_climb \
+             --pass-config tir.disable_storage_rewrite=1 \
+             --pass-config tir.disable_vectorize=1 \
+             ../m55m1_bsp_sample_model/vww_96_int8.tflite \
+             --output-format=mlf

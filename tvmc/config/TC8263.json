@@ -1,0 +1,31 @@
+{
+  "output_format": "mlf",
+  "runtime": {
+    "kind": "crt"
+  },
+  "executor": {
+    "kind": "aot",
+    "unpacked-api": true,
+    "interface-api": "c"
+  },
+  "pass-config": {
+    "tir.usmp.enable": "1",
+    "tir.usmp.algorithm": "hill_climb",
+    "tir.disable_storage_rewrite": "1",
+    "tir.disable_vectorize": "1"
+  },
+  "targets": [
+    {
+      "kind": "ethos-u",
+      "accelerator_config": "ethos-u55-256"
+    },
+    {
+      "kind": "cmsis-nn",
+      "mcpu": "cortex-m55"
+    },
+    {
+      "kind": "c",
+      "mcpu": "cortex-m55"
+    }
+  ]
+}
