@@ -1,0 +1,38 @@
+tool_specific:
+  uvision5_armc6:
+    macros:
+      - DEBUG_PORT=UART0
+    linker_file:
+      - link_script\armcc\armcc.scatter
+  make_gcc_arm:
+    macros:
+      - DEBUG_PORT=UART0
+    misc:
+      standard_libraries:
+        - m
+        - gcc
+        - c
+        - stdc++
+      common_flags:
+        - -mfloat-abi=hard
+        - -O1
+        - -g
+        - -ggdb
+        - -Wall
+        - -fno-strict-aliasing
+        - -ffunction-sections
+        - -fdata-sections
+        - -fno-exceptions
+        - -fno-delete-null-pointer-checks
+        - -fmessage-length=0
+        - -fno-builtin
+        - -mthumb
+      ld_flags:
+        - -specs=nosys.specs
+      cxx_flags:
+        - -fno-rtti
+        - -std=c++11
+      c_flags:
+        - -std=c11
+    linker_file:
+      - link_script\gcc\gcc.ld

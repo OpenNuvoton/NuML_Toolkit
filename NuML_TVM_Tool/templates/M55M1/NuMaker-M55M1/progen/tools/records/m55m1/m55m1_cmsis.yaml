@@ -1,0 +1,9 @@
+common:
+  includes:
+    - M55M1BSP\Library\CMSIS\Core\Include
+    - M55M1BSP\Library\Device\Nuvoton\M55M1\Include
+  sources:
+    cmsis:
+    - M55M1BSP\Library\Device\Nuvoton\M55M1\Source\startup_M55M1.c
+    - M55M1BSP\Library\Device\Nuvoton\M55M1\Source\system_M55M1.c
+

@@ -1,0 +1,6 @@
+common:
+  includes:
+    - microtvm\ethosu\include
+  sources:
+    microtvm:
+    - microtvm\ethosu\src\tvm_ethosu_runtime.c

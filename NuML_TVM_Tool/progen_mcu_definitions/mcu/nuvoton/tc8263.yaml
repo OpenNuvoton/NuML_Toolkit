@@ -1,0 +1,26 @@
+mcu:
+    core:
+    - cortex-m55
+    name:
+    - tc8263
+    vendor:
+    - Nuvoton
+tool_specific:
+    uvision5:
+        TargetOption:
+            Cpu:
+            - IRAM(0x30000000,0x00020000) IRAM2(0x20000000,0x00020000) IROM(0x10000000,0x00200000) IROM2(0x00000000,0x00200000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ESEL ELITTLE
+            Device:
+            - ARMCM55
+            DeviceId:
+            - 0
+            FlashDriverDll:
+            - UL2V8M(-S0 -C0 -P0 -FD30000000 -FC1000)
+            PackID:
+            - ARM.CMSIS.5.8.0
+            RegisterFile:
+            - $$Device:ARMCM55$Device\ARM\ARMCM55\Include\ARMCM55.h
+            SFDFile:
+            - null
+            Vendor:
+            - ARM

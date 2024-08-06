@@ -1,0 +1,16 @@
+common:
+  includes:
+    - M55M1BSP\Library\CMSIS\NN\Include
+    - M55M1BSP\Library\CMSIS\DSP\Include
+
+tool_specific:
+  gcc_arm:
+    sources:
+      nn_libs:
+      - M55M1BSP\Library\CMSIS\Lib\GCC\libCMSIS_DSP.a
+      - M55M1BSP\Library\CMSIS\Lib\GCC\libCMSIS_NN.a
+  uvision5_armc6:
+    sources:
+      nn_libs:
+      - M55M1BSP\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib
+      - M55M1BSP\Library\CMSIS\Lib\KEIL\cmsis_nn.lib

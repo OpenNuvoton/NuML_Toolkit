@@ -1,0 +1,27 @@
+modules:
+    bsp: &module_bsp
+        - tools/records/bsp/bsp.yaml
+    codegen: &module_codegen
+        - tools/records/codegen/codegen.yaml
+    nn_libs: &module_nn_libs
+        - tools/records/nn_libs/nn_libs.yaml
+    microtvm: &module_microtvm
+        - tools/records/microtvm/microtvm.yaml
+    toolchain_settings: &toolchain_settings
+        - tools/records/toolchain_settings/toolchain_settings.yaml
+
+projects:
+    nn_inference:
+        - *module_bsp
+        - *module_codegen
+        - *module_nn_libs
+        - *module_microtvm
+        - tools/records/m55m1/m55m1_cmsis.yaml
+        - tools/records/example/nn_inference.yaml
+        - *toolchain_settings
+
+settings:
+    tools:
+        uvision:
+            template:
+                - tools/records/templates/Template.uvprojx

@@ -1,0 +1,12 @@
+common:
+  includes:
+    - module\codegen\host\include
+    - module\runtime\include
+  sources:
+    codegen:
+    - module\codegen\host\src
+    - module\runtime\src\runtime\crt\memory\stack_allocator.c
+    - module\runtime\src\runtime\crt\common\crt_backend_api.c
+    - module\runtime\src\runtime\crt\common\crt_runtime_api.c
+    - module\runtime\src\runtime\crt\common\func_registry.c
+    - module\runtime\src\runtime\crt\common\ndarray.c

@@ -1,0 +1,17 @@
+common:
+  includes:
+    - m460BSP\Library\CMSIS\Include
+    - m460BSP\Library\Device\Nuvoton\m460\Include
+  sources:
+    cmsis:
+    - m460BSP\Library\Device\Nuvoton\m460\Source\system_m460.c
+tool_specific:
+  gcc_arm:
+    sources:
+      cmsis:
+      - m460BSP\Library\Device\Nuvoton\m460\Source\GCC\startup_M460.s
+  uvision:
+    sources:
+      cmsis:
+      - m460BSP\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s
+

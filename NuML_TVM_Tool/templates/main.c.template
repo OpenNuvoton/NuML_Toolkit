@@ -1,0 +1,79 @@
+/******************************************************************************
+ * @file     main.c
+ * @version  V1.00
+ * @brief    Demonstrate run nn inference via TVM
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ *****************************************************************************/
+#include <stdio.h>
+#include "NuMicro.h"
+#include "BoardInit.h"
+
+
+#include "tvm_runtime.h"
+#include "tvm/runtime/crt/stack_allocator.h"
+#include "tvmgen_default.h"
+#include "tvm/runtime/crt/module.h"
+
+/****************************************************************************
+ * autogen section: EthosU header 
+ ****************************************************************************/
+
+/****************************************************************************
+ * autogen section: Input tensor data 
+ ****************************************************************************/
+
+/****************************************************************************
+ * autogen section: Output tensor data
+ ****************************************************************************/
+
+// Called to start system timer.
+tvm_crt_error_t TVMPlatformTimerStart() {
+  return kTvmErrorNoError;
+}
+
+// Called to stop system timer.
+tvm_crt_error_t TVMPlatformTimerStop(double* elapsed_time_seconds) {
+  return kTvmErrorNoError;
+}
+
+
+const TVMModule* TVMSystemLibEntryPoint(void) { return NULL; }
+
+/****************************************************************************
+ * InferenceJob
+ ****************************************************************************/
+
+int main(void) {
+
+    BoardInit();
+
+    printf("\nThis sample code run inference by TVM \n");
+
+/****************************************************************************
+ * autogen section: EthosU init 
+ ****************************************************************************/
+
+/****************************************************************************
+ * autogen section: Input tensor init 
+ ****************************************************************************/
+
+/****************************************************************************
+ * autogen section: Output tensor init 
+ ****************************************************************************/
+
+    printf("Running Inference \n");
+
+/****************************************************************************
+ * autogen section: TVM default run 
+ ****************************************************************************/
+
+    printf("Inference Done\n");
+
+/****************************************************************************
+ * autogen section: EthosU release 
+ ****************************************************************************/
+
+    return 0;
+}

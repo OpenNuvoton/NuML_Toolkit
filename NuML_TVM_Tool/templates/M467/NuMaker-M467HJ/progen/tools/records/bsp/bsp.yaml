@@ -1,0 +1,8 @@
+common:
+  includes:
+    - m460BSP\Library\StdDriver\inc
+  sources:
+    bsp:
+    - m460BSP\Library\StdDriver\src\uart.c
+    - m460BSP\Library\StdDriver\src\retarget.c
+    - m460BSP\Library\StdDriver\src\clk.c
