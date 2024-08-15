@@ -58,7 +58,7 @@ extern size_t GetModelLen();
 
 static int32_t PrepareModelToHyperRAM(void)
 {
-#define MODEL_FILE "0:\\face_landmark.tflite"
+#define MODEL_FILE "0:\\nn_model.tflite"
 #define EACH_READ_SIZE 512
 	
     TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */	
