@@ -3,7 +3,7 @@ NuML_Tool
 ### Machine learning MCU project generate, build and flash utility. Base on TFLM framework. 
 ## Support list
 * Board 
-    1. NuMaker_M55M1
+    1. NuMaker-M55M1
 * Project type (IDE/toolchain)
     1. uvision5/armc6
     2. make/gcc
@@ -18,7 +18,7 @@ python setup_progendef.py
 ## Usage
 * Generate
     ~~~
-    python numl_tool.py generate --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6]
+    python numl_tool.py generate --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6]
     ~~~  
     * Parameter  
         * model_file: Specify neraual network model file
@@ -51,7 +51,7 @@ python setup_progendef.py
             * uvision5_armc6  
 * Deploy
     ~~~
-    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
+    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
     ~~~
     * Parameter
         * model_file: Specify neraual network model file
@@ -65,21 +65,21 @@ python setup_progendef.py
 ## Example
 * For make_gcc_arm
     ~~~
-    python numl_tool generate --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy
+    python numl_tool generate --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy
     python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference   
     python numl_tool.py flash --project_path ..\..\yyy\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1    
     ~~~
     or
     ~~~
-    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy    
+    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy    
     ~~~
 * For uvision5_armc6
     ~~~
-    python numl_tool.py generate --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy --project_type uvision5_armc6
+    python numl_tool.py generate --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy --project_type uvision5_armc6
     python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe   
     python numl_tool.py flash --project_path ..\..\yyy\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1 --project_type uvision5_armc6
     ~~~
     or
     ~~~
-    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker_M55M1 --output_path ..\..\yyy --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
+    python numl_tool.py deploy --model_file xxx\xxx.tflte --board NuMaker-M55M1 --output_path ..\..\yyy --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
     ~~~
