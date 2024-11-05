@@ -223,6 +223,7 @@ def add_operators_section(model_file, NNModel_cpp_file):
         operator_add_function = GetTflmBuiltinOPFunciton(op_code)
 
         if operator_add_function == None:
+            print(f"Unknown builtin opcode {op_code}, should be a custom operator.")
             raise ValueError("Not supported operator by TFLM")
 
         szWriteLine = '\tthis->m_opResolver.' + operator_add_function + '();\n'
@@ -232,6 +233,7 @@ def add_operators_section(model_file, NNModel_cpp_file):
         operator_add_function = GetTflmCustomOPFunciton(op_code)
 
         if operator_add_function == None:
+            print(f"Unknown custom opcode {op_code}.")
             raise ValueError("Not supported operator by TFLM")
 
         szWriteLine = '\tthis->m_opResolver.' + operator_add_function + '();\n'
