@@ -18,7 +18,7 @@ NuML_Toolkit
     ~~~  
     For others:  
     ~~~
-    pip install -f requirements.txt
+    pip install -r requirements.txt
     ~~~  
 2. tvmc.exe download  
     ~~~
