@@ -6,7 +6,7 @@ import subprocess
 board_list = [
     #board name, MCU, NuLinkTool
     ['NuMaker-M467HJ', 'M467', 'NuLink_M460_M2L31.exe'],
-    ['NuMaker-M55M1', 'M55M1', 'NuLink_M55M1.exe'],
+    ['NuMaker-M55M1', 'M55M1', 'M55M1_M5531\\NuLink.exe'],
 ]
 
 def add_flash_parser(subparsers, _):

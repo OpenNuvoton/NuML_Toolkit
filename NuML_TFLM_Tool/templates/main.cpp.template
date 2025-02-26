@@ -128,6 +128,9 @@ int main()
 	/* Copy model file from SD to HyperRAM*/
 	int32_t i32ModelSize;
 
+	printf("==================== Load model file from SD card =================================\n"); 
+	printf("Please copy NN_ModelInference/Model/xxx_vela.tflite to SDCard:/nn_model.tflite     \n"); 
+	printf("===================================================================================\n"); 
 	i32ModelSize = PrepareModelToHyperRAM();
 	
 	if(i32ModelSize <= 0 )

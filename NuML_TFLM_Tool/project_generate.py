@@ -60,7 +60,7 @@ def download_bsp(board_info, templates_path):
 def model_compile(board_info, output_path, vela_dir_path, model_file):
     cur_work_dir = os.getcwd()
     os.chdir(output_path)
-    vela_exe = os.path.join(vela_dir_path, 'vela-3_10_0.exe')    
+    vela_exe = os.path.join(vela_dir_path, 'vela-4_0_1.exe')    
     vela_conf_file = os.path.join(vela_dir_path, 'default_vela.ini')
     vela_conifg_option = '--config='+vela_conf_file
     print(output_path)

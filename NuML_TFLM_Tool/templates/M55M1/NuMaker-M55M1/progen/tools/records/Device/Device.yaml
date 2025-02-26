@@ -4,5 +4,5 @@ common:
   sources:
     Device:
     - NN_ModelInference\Device\HyperRAM\hyperram_code.c
-    - NN_ModelInference\Device\SDCard\diskio.c
     - NN_ModelInference\Device\SDCard\sdglue.c
+    - ..\..\Library\Storage\diskio_SDH.c

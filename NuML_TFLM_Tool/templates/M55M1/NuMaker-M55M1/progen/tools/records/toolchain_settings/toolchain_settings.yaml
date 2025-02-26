@@ -1,7 +1,6 @@
 tool_specific:
   uvision5_armc6:
     macros:
-      - NVT_DCACHE_ON
       - NVT_VECTOR_ON_FLASH
       - TF_LITE_STATIC_MEMORY
       - ARM_MATH_DSP
@@ -11,7 +10,6 @@ tool_specific:
       - NN_ModelInference\KEIL\armcc.scatter
   make_gcc_arm:
     macros:
-      - NVT_DCACHE_ON
       - NVT_VECTOR_ON_FLASH
       - TF_LITE_STATIC_MEMORY
       - ARM_MATH_DSP

@@ -15,7 +15,7 @@
 #include "hyperram_code.h"
 
 #define DESIGN_NAME "M55M1"
-#define HYPERRAM_SPIM_PORT SPIM1        //For NuMaker-M55M1 board
+#define HYPERRAM_SPIM_PORT SPIM0        //For NuMaker-M55M1 board
 
 static void SDCard_PinConfig(void)
 {
@@ -47,11 +47,11 @@ static void SYS_Init(void)
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 220MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HXT, FREQ_220MHZ);
 
     /* Enable APLL1 clock */
-    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_180MHZ, CLK_APLL1_SELECT);
+    CLK_EnableAPLL(CLK_APLLCTL_APLLSRC_HXT, FREQ_220MHZ, CLK_APLL1_SELECT);
 
 
     /* Update System Core Clock */
@@ -77,7 +77,6 @@ static void SYS_Init(void)
     CLK_EnableModuleClock(NPU0_MODULE);
 
     /* Enable SDH0 module clock source as HCLK and SDH0 module clock divider as 4 */
-//    CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_HCLK0, CLK_SDHDIV_SDH0DIV(4));
     CLK_SetModuleClock(SDH0_MODULE, CLK_SDHSEL_SDH0SEL_APLL1_DIV2, CLK_SDHDIV_SDH0DIV(5));
     CLK_EnableModuleClock(SDH0_MODULE);
 
@@ -109,7 +108,7 @@ int BoardInit(void)
     SYS_Init();
 
     /* UART init - will enable valid use of printf (stdout
-     * re-directed at this UART (UART6) */
+     * re-directed at this UART */
     InitDebugUart();
 
     SYS_LockReg();                   /* Unlock register lock protect */
