@@ -14,7 +14,7 @@
 #include "hyperram_code.h"
 
 #define DESIGN_NAME "M55M1"
-#define HYPERRAM_SPIM_PORT SPIM1
+#define HYPERRAM_SPIM_PORT SPIM0
 
 static void SYS_Init(void)
 {
@@ -34,8 +34,8 @@ static void SYS_Init(void)
     /* Waiting for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
-    /* Switch SCLK clock source to APLL0 and Enable APLL0 180MHz clock */
-    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_180MHZ);
+    /* Switch SCLK clock source to APLL0 and Enable APLL0 220MHz clock */
+    CLK_SetBusClock(CLK_SCLKSEL_SCLKSEL_APLL0, CLK_APLLCTL_APLLSRC_HIRC, FREQ_220MHZ);
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
@@ -76,12 +76,6 @@ static void SYS_Init(void)
     SetDebugUartMFP();
 
     HyperRAM_PinConfig(HYPERRAM_SPIM_PORT);
-}
-
-static void UART0_Init(void)
-{
-    /* Configure UART0 and set UART0 baud rate */
-    UART_Open(UART0, 115200);
 }
 
 /**

@@ -15,47 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /*
- * This is a simplified picture of the M55M1 memory system.
- * Please refer to the M55M1 Technical Reference Manual for
- * further information.
  *
- *
- * +---------------+   +---------------+  +------+
- * | Ethos-U55     |   | Cortex-M55    +--+ ITCM |
- * |               |   |               |  +------+
- * |               |   |               |
- * |               |   |               |  +------+
- * |  M1      M0   |   |               +--+ DTCM |
- * +---+-------+---+   +-------+-------+  +------+
- *     |       |               |
- *     |   +---+---------------+-----+
- *     |   | AMBA AXI NIC-400-Lite   |
- *     |   +---+-----------------+---+
- *     |       |                 |
- * +---+-------+------------+ +--+---------+
- * | AMBA AHB               | | SRAM 0/1/2 |
- * +---+--------+--------+--+ +------------+
- *     |
- * +---+---+
- * | FLASH |
- * +-------+
- *
- * +-----------------------+-------------+-------------+----+---------------------------------+
- * |  Memory region name   | Base addr   |    Size     |IDAU|  MCC load address + remarks     |
- * +-----------------------+-------------+-------------+----+---------------------------------+
- * | ITCM                  | 0x0000_0000 | 0x0001_0000 | S  | 64 kiB                          |
- * | ITCM                  | 0x1000_0000 | 0x0001_0000 | NS | Non-Secure alias for ITCM       |
- * | FLASH                 | 0x0010_0000 | 0x0020_0000 | S  | 2 MiB                           |
- * | FLASH                 | 0x1010_0000 | 0x0020_0000 | NS | Non-Secure alias for Flash      |
- * | DTCM                  | 0x2000_0000 | 0x0002_0000 | S  | 128 kiB                         |
- * | DTCM                  | 0x3000_0000 | 0x0002_0000 | NS | Non-Secure alias for DTCM       |
- * | SRAM                  | 0x2010_0000 | 0x0015_0000 | S  | 1344 kiB                        |
- * | SRAM                  | 0x3010_0000 | 0x0015_0000 | NS | Non-Secure alias for SRAM0/1/2  |
- * | LPSRAM                | 0x2031_0000 | 0x0000_2000 | S  | 8 kiB                           |
- * | LPSRAM                | 0x3031_0000 | 0x0000_2000 | NS | Non-Secure alias for LPSRAM     |
- * +-----------------------+-------------+-------------+----+---------------------------------+
+ * +-----------------------+-------------+-------------+----+------------------------------------------------+
+ * |  Memory region name   | Base addr   |    Size     |IDAU| Description                                    |
+ * +-----------------------+-------------+-------------+----+------------------------------------------------+
+ * | ITCM                  | 0x0000_0000 | 0x0001_0000 | S  | 64 kiB.                                        |
+ * | ITCM                  | 0x1000_0000 | 0x0001_0000 | NS | Non-Secure alias for ITCM                      |
+ * | FLASH                 | 0x0010_0000 | 0x0020_0000 | S  | 2 MiB                                          |
+ * | FLASH                 | 0x1010_0000 | 0x0020_0000 | NS | Non-Secure alias for Flash                     |
+ * | DTCM                  | 0x2000_0000 | 0x0002_0000 | S  | 128 kiB                                        |
+ * | DTCM                  | 0x3000_0000 | 0x0002_0000 | NS | Non-Secure alias for DTCM                      |
+ * | SRAM01                | 0x2010_0000 | 0x0010_0000 | S  | 1 MiB                                          |
+ * | SRAM01                | 0x3010_0000 | 0x0010_0000 | NS | Non-Secure alias for SRAM01                    |
+ * | SRAM2                 | 0x2020_0000 | 0x0005_0000 | S  | 320 kiB                                        |
+ * | SRAM2                 | 0x3020_0000 | 0x0005_0000 | NS | Non-Secure alias for SRAM2                     |
+ * | SRAM3                 | 0x2030_0000 | 0x0002_0000 | S  | 8 kiB                                          |
+ * | SRAM3                 | 0x3030_0000 | 0x0002_0000 | NS | Non-Secure alias for SRAM3                     |
+ * | LPSRAM                | 0x2031_0000 | 0x0002_0000 | S  | 8 kiB                                          |
+ * | LPSRAM                | 0x3031_0000 | 0x0002_0000 | NS | Non-Secure alias for LPSRAM                    |
+ * | EBI                   | 0x6000_0000 | 0x0030_0000 | S  | 3 MiB                                          |
+ * | EBI                   | 0x7000_0000 | 0x0030_0000 | NS | Non-Secure alias for EBI                       |
+ * | SPIM0                 | 0x8200_0000 | 0x0200_0000 | S  | 32 MiB                                         |
+ * | SPIM0                 | 0x9200_0000 | 0x0200_0000 | NS | Non-Secure alias for SPIM0                     |
+ * +-----------------------+-------------+-------------+----+------------------------------------------------+
  *
  *  Note: Ethos-U55 can access FLASH, internal SRAM 0,1 => activation buffers and
  *        the model should only be placed in those regions.
@@ -64,17 +47,17 @@
  *        memory banks.
  */
 
-__STACK_SIZE = 0x00000800;
-__HEAP_SIZE  = 0x00000800;
+__STACK_SIZE = 0x10000;
+__HEAP_SIZE  = 0x0a000;
 
 /* System memory brief */
 MEMORY
 {
   ITCM   (rx)  : ORIGIN = 0x00000010, LENGTH = 0x00010000
   FLASH  (rx)  : ORIGIN = 0x00100000, LENGTH = 0x00200000
+  SRAM2  (rw)  : ORIGIN = 0x20200000, LENGTH = 0x00050000
   DTCM   (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00020000
-  SRAM   (rwx) : ORIGIN = 0x20100000, LENGTH = 0x00150000
-  LPSRAM (rwx) : ORIGIN = 0x20310000, LENGTH = 0x00002000
+  SRAM01_HYPERRAM  (rw)  : ORIGIN = 0x81F00000, LENGTH = 0x02100000
 }
 
 
@@ -119,6 +102,7 @@ SECTIONS
     *startup_*.o(.text*)
 
     *(.text*)
+    *(.rodata.tvm)
 
     KEEP(*(.init))
     KEEP(*(.fini))
@@ -136,9 +120,6 @@ SECTIONS
     *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
     *(SORT(.dtors.*))
     *(.dtors)
-
-    /* *(.rodata*) */
-
     KEEP(*(.eh_frame*))
   } > FLASH
 
@@ -162,8 +143,6 @@ SECTIONS
     LONG ((__bss_end__ - __bss_start__) / 4)
     LONG (__dtcm_zi_start__)
     LONG ((__dtcm_zi_end__ - __dtcm_zi_start__) / 4)
-    LONG (__lpsram_zi_start__)
-    LONG ((__lpsram_zi_end__ - __lpsram_zi_start__) / 4)
     __zero_table_end__ = .;
   } > FLASH
 
@@ -172,20 +151,15 @@ SECTIONS
     . = ALIGN(4);
     __copy_table_start__ = .;
 
-    /* Section to be copied - part 1: RW data for SRAM */
+    /* Section to be copied - part 1: RW data for for DTCM */
     LONG (__eitcm)
     LONG (__data_start__)
     LONG ((__data_end__ - __data_start__) / 4)
 
-    /* Section to be copied - part 2: RO code for ITCM */
+    /* Section to be copied - part 2: RO code for for ITCM */
     LONG (__etext)
     LONG (__itcm_text_start__)
     LONG ((__itcm_text_end__ - __itcm_text_start__ ) / 4)
-    
-    /* Section to be copied - part 3: RW data for DTCM */
-    LONG (__esram_data)
-    LONG (__dtcm_init_start__)
-    LONG ((__dtcm_init_end__ - __dtcm_init_start__ ) / 4)
 
     __copy_table_end__ = .;
   } > FLASH
@@ -216,6 +190,12 @@ SECTIONS
     *(.data.*)
 
     . = ALIGN(4);
+    __dtcm_init_start__ = .;
+    *(DTCM.Init)
+    . = ALIGN(4);
+    __dtcm_init_end__ = .;
+
+    . = ALIGN(4);
     /* preinit data */
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP(*(.preinit_array))
@@ -239,19 +219,29 @@ SECTIONS
     . = ALIGN(4);
     /* All data end */
     . = ALIGN(16);
-    *(.rodata.tvm)
     __data_end__ = .;
-  } > SRAM
+  } > DTCM
+
+  __edtcm_data = __etext + (__data_end__ - __data_start__);
   
-  .sram :
+  .sram01_hyperram (NOLOAD):
   {
     . = ALIGN(16);
-    *(.bss.tensor_arena)
     *(.bss.noinit.tvm)
-  } > SRAM
+  } > SRAM01_HYPERRAM AT > SRAM01_HYPERRAM
+
+  .dtcm.zi (NOLOAD) :
+  {
+    . = ALIGN(4);
+    __dtcm_zi_start__ = .;
+    *(.DTCM.ZeroInit)
+    . = ALIGN(4);
+    __dtcm_zi_end__ = .;
+  } > DTCM AT > DTCM
 
   .bss :
   {
+    __data_end__ = .;
     . = ALIGN(4);
     __bss_start__ = .;
     *(.bss)
@@ -259,39 +249,7 @@ SECTIONS
     *(COMMON)
     . = ALIGN(4);
     __bss_end__ = .;
-  } > SRAM AT > SRAM
-
-  __esram_data = __eitcm + (__data_end__ - __data_start__);
-  
-  .dtcm.init : AT (__esram_data)
-  {
-    . = ALIGN(4);
-    __dtcm_init_start__ = .;
-    *(DTCM.VTOR)
-    *(DTCM.Init)
-    . = ALIGN(4);
-    __dtcm_init_end__ = .;
-  } > DTCM
-
-  .dtcm.zi (NOLOAD) :
-  {
-    . = ALIGN(4);
-    __dtcm_zi_start__ = .;
-    *(.bss.DTCM.ZeroInit)
-    . = ALIGN(4);
-    __dtcm_zi_end__ = .;
   } > DTCM AT > DTCM
-
-  __edtcm_init_data = __esram_data + (__dtcm_init_end__ - __dtcm_init_start__);
-  
-  .lpsram (NOLOAD) :
-  {
-    . = ALIGN(4);
-    __lpsram_zi_start__ = .;
-    *(.lpSram)
-    . = ALIGN(4);
-    __lpsram_zi_end__ = .;
-  } > LPSRAM AT > LPSRAM
 
   .heap (NOLOAD) :
   {
@@ -301,7 +259,7 @@ SECTIONS
     . = . + __HEAP_SIZE;
     . = ALIGN(8);
     __HeapLimit = .;
-  } > SRAM
+  } > DTCM
 
   .stack (ORIGIN(DTCM) + LENGTH(DTCM) - __STACK_SIZE) (NOLOAD) :
   {

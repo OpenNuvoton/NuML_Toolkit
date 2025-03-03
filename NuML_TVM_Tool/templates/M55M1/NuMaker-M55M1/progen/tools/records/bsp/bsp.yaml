@@ -10,6 +10,7 @@ common:
     - M55M1BSP\Library\StdDriver\src\spim_hyper.c
     - M55M1BSP\Library\StdDriver\src\retarget.c
     - M55M1BSP\Library\StdDriver\src\clk.c
+    - M55M1BSP\Library\StdDriver\src\gpio.c
     - M55M1BSP\Library\StdDriver\src\npu\ethosu_device_u55_u65.c
     - M55M1BSP\Library\StdDriver\src\npu\ethosu_driver.c
     - M55M1BSP\Library\StdDriver\src\npu\ethosu_pmu.c

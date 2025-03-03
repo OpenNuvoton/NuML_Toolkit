@@ -19,7 +19,6 @@ PROJECT_GEN_EXAMPLE_DIR = 'example'
 
 board_list = [
     #board name, MCU, BSP name, BSP URL
-    ['NuMaker_TC8263', 'TC8263', 'TC8263BSP', 'https://github.com/chchen59/M55A1BSP.git'],
     #['NuMaker-M467HJ', 'M467', 'm460BSP', 'git@github.com:OpenNuvoton/m460bsp.git'],
     ['NuMaker-M55M1', 'M55M1', 'M55M1BSP', 'https://github.com/OpenNuvoton/M55M1BSP.git'],
     ['NuMaker-M467HJ', 'M467', 'm460bsp', 'https://github.com/OpenNuvoton/m460bsp.git'],
