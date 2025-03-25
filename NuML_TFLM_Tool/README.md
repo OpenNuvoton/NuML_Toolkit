@@ -9,7 +9,7 @@ NuML_Tool
     2. make/gcc
 ## Install
 ~~~
-pip install -f ..\requirements.txt  
+pip install -r ..\requirements.txt  
 python setup_progendef.py
 ~~~  
 * Arm GNU toolcahin
