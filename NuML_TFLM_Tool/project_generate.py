@@ -313,15 +313,9 @@ def project_generate(args):
 
     #Generate NNModel.hpp file
     NNModel_hpp_file_path = os.path.join(project_example_path, 'Model', 'include', 'NNModel.hpp')
-    NNModel_hpp_temp_file_path = os.path.join(templates_path, 'NNModel.hpp.template')
+    NNModel_hpp_temp_file_path = os.path.join(templates_path, 'NNModel_hpp_tmpl.jinja2')
     print(f'NNModel.hpp template path {NNModel_hpp_temp_file_path}')
     print(f'NNModel.hpp file path {NNModel_hpp_file_path}')
-
-    try:
-        NNModel_hpp_temp_file = open(NNModel_hpp_temp_file_path, "r")
-    except OSError:
-        print("Could not open NNModel.hpp template file")
-        return 'unable_generate'
 
     try:
         NNModel_hpp_file = open(NNModel_hpp_file_path, "w")
@@ -331,21 +325,13 @@ def project_generate(args):
 
     with NNModel_hpp_file:
         NNModel_hpp_codegen = NNModelHppCodegen()
-        NNModel_hpp_codegen.code_gen(NNModel_hpp_file, NNModel_hpp_temp_file, vela_model_file)
-
-    NNModel_hpp_temp_file.close()
+        NNModel_hpp_codegen.code_gen(NNModel_hpp_file, NNModel_hpp_temp_file_path, vela_model_file)
 
     #Generate NNModel.cpp file
     NNModel_cpp_file_path = os.path.join(project_example_path, 'Model', 'NNModel.cpp')
-    NNModel_cpp_temp_file_path = os.path.join(templates_path, 'NNModel.cpp.template')
+    NNModel_cpp_temp_file_path = os.path.join(templates_path, 'NNModel_cpp_tmpl.jinja2')
     print(f'NNModel.cpp template path {NNModel_cpp_temp_file_path}')
     print(f'NNModel.cpp file path {NNModel_cpp_file_path}')
-
-    try:
-        NNModel_cpp_temp_file = open(NNModel_cpp_temp_file_path, "r")
-    except OSError:
-        print("Could not open NNModel.cpp template file")
-        return 'unable_generate'
 
     try:
         NNModel_cpp_file = open(NNModel_cpp_file_path, "w")
@@ -355,21 +341,13 @@ def project_generate(args):
 
     with NNModel_cpp_file:
         NNModel_cpp_codegen = NNModelCppCodegen()
-        NNModel_cpp_codegen.code_gen(NNModel_cpp_file, NNModel_cpp_temp_file, vela_model_file)
-
-    NNModel_cpp_temp_file.close()
+        NNModel_cpp_codegen.code_gen(NNModel_cpp_file, NNModel_cpp_temp_file_path, vela_model_file)
 
     #Generate main.cpp file
     main_file_path = os.path.join(project_example_path, 'main.cpp')
-    main_temp_file_path = os.path.join(templates_path, 'main.cpp.template')
+    main_temp_file_path = os.path.join(templates_path, 'main_cpp_tmpl.jinja2')
     print(f'template path {main_temp_file_path}')
     print(f'main file path {main_file_path}')
-
-    try:
-        main_temp_file = open(main_temp_file_path, "r")
-    except OSError:
-        print("Could not open main template file")
-        return 'unable_generate'
 
     try:
         main_file = open(main_file_path, "w")
@@ -379,9 +357,8 @@ def project_generate(args):
 
     with main_file:
         main_codegen = MainCCodegen()
-        main_codegen.code_gen(main_file, main_temp_file, vela_summary_file)
+        main_codegen.code_gen(main_file, main_temp_file_path, vela_summary_file)
 
-    main_temp_file.close()
     os.remove(vela_model_file)
     os.remove(vela_model_cc_file)
 

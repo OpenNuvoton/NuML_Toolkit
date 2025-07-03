@@ -1,6 +1,7 @@
 import sys
-import re
 import tflite
+import os
+from jinja2 import Environment, FileSystemLoader
 
 CUSTOM_OPCODE2TFLMFUN = {
     'CIRCULAR_BUFFER': 'AddCircularBuffer',
@@ -197,14 +198,16 @@ def GetTflmCustomOPFunciton(opcode):
         raise ValueError("Unknown custom opcode %s." % opcode)
 
 
-def add_operators_section(model_file, NNModel_cpp_file):
-    buf = open(model_file, 'rb').read()
+def add_operators_section(model_file):
+    f = open(model_file, 'rb')
+    buf = f.read()
     model = tflite.Model.GetRootAsModel(buf, 0)
     subgraph = model.Subgraphs(0)
     num_operators = subgraph.OperatorsLength()
 
     builtin_opcode_list  = []
     custom_opcode_list  = []
+    all_op_list = []
 
     for op_index in range(num_operators):
         operator = subgraph.Operators(op_index)
@@ -226,8 +229,7 @@ def add_operators_section(model_file, NNModel_cpp_file):
             print(f"Unknown builtin opcode {op_code}, should be a custom operator.")
             raise ValueError("Not supported operator by TFLM")
 
-        szWriteLine = '\tthis->m_opResolver.' + operator_add_function + '();\n'
-        NNModel_cpp_file.write(szWriteLine)
+        all_op_list.append(operator_add_function)
 
     for op_code in custom_opcode_list:
         operator_add_function = GetTflmCustomOPFunciton(op_code)
@@ -236,22 +238,17 @@ def add_operators_section(model_file, NNModel_cpp_file):
             print(f"Unknown custom opcode {op_code}.")
             raise ValueError("Not supported operator by TFLM")
 
-        szWriteLine = '\tthis->m_opResolver.' + operator_add_function + '();\n'
-        NNModel_cpp_file.write(szWriteLine)
+        all_op_list.append(operator_add_function)
 
-add_operator_list = ["Add Operators", add_operators_section]
-keyword_table = [add_operator_list]
+    f.close()
+    return all_op_list
 
 class NNModelCppCodegen:
     def code_gen(self, NNModel_cpp_file, template_file, model_file):
-        while template_file:
-            line = template_file.readline()
-            if line == "":
-                break
-            NNModel_cpp_file.write(line)
-            if re.search("autogen section", line):
-                for list_element in keyword_table:
-                    if re.search(list_element[0], line):
-                        line = template_file.readline()
-                        NNModel_cpp_file.write(line)
-                        list_element[1](model_file, NNModel_cpp_file)
+        tmpl_dirname = os.path.dirname(template_file)
+        tmpl_basename = os.path.basename(template_file)
+        env =  Environment(loader=FileSystemLoader(tmpl_dirname), trim_blocks=True, lstrip_blocks=True)
+        template = env.get_template(tmpl_basename)
+        operator_list = add_operators_section(model_file)
+        output = template.render(operators = operator_list)
+        NNModel_cpp_file.write(output)

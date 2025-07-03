@@ -27,14 +27,10 @@
 #include "log_macros.h"      /* Logging macros (optional) */
 
 //#define __PROFILE__
-/****************************************************************************
- * autogen section: Model in SD
- ****************************************************************************/
+{{define_SD_model_load}}
 
 #undef ACTIVATION_BUF_SZ
-/****************************************************************************
- * autogen section: Activation size
- ****************************************************************************/
+{{define_activation_buf_size}}
 
 #define MODEL_AT_HYPERRAM_ADDR 0x82400000
 

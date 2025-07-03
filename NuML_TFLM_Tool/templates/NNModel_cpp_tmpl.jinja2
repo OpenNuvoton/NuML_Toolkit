@@ -16,9 +16,9 @@ const tflite::MicroOpResolver &arm::app::NNModel::GetOpResolver()
 
 bool arm::app::NNModel::EnlistOperations()
 {
-/****************************************************************************
- * autogen section: Add Operators
- ****************************************************************************/
+    {% for operator in operators %}
+    this->m_opResolver.{{operator}}();
+    {% endfor %}
 
     return true;
 }
