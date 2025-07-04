@@ -16,8 +16,12 @@ class GenericCodegen:
         return cls(*args, **kwargs)
     
     def code_gen(self):
-        print(self.model)
-        print(self.project)
+        print('Run generic codegen...')
+        print(f"model:{self.model}")
+        print(f"project:{self.project}")
+        for key, value in self.extra.items():
+            print(f"extra param:{key}, {value}")
+
         template_path = 'generic_codegen'
 
         #Generate NNModel.hpp file

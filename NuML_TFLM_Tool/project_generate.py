@@ -26,7 +26,7 @@ project_type_list = ['uvision5_armc6', 'make_gcc_arm']
 
 application = {
     "generic"   : {
-                    "board": ['NuMaker-M55M1', 'NuMaker-M467HJ'],
+                    "board": ['NuMaker-M55M1'],
                     "example_tmpl_dir": "generic_template",
                     "example_tmpl_proj": "NN_ModelInference"
                   },
@@ -58,6 +58,7 @@ def add_generate_parser(subparsers, _):
     parser.add_argument("--board", help="specify target board name", required=True)
     parser.add_argument("--project_type", help="specify project type uvision5_armc6/make_gcc_arm", default='make_gcc_arm')
     parser.add_argument("--templates_path", help="specify template path")
+    parser.add_argument("--application", help="specify application scenario generic/imgclass", default='generic')
 
 # download board BSP
 def download_bsp(board_info, templates_path):
@@ -270,6 +271,13 @@ def proj_gen(progen_path, project_type, project_dir_name):
 def project_generate(args):
     print(f"project type is {args.project_type}")
     templates_path = args.templates_path 
+    application_usage = args.application
+
+    if not application_usage in application:
+        print("applicaiton not found! using generic instead")
+        application_usage = "generic"
+
+    application_param = application[application_usage]
 
     if templates_path == None:
         templates_path = os.path.join(os.path.dirname(__file__), 'templates')
@@ -321,14 +329,16 @@ def project_generate(args):
     print(vela_model_cc_file)
 
     #prepare project resource
-    example_tmpl_dir = application["generic"]["example_tmpl_dir"]
-    example_tmpl_proj = application["generic"]["example_tmpl_proj"]
+    example_tmpl_dir = application_param["example_tmpl_dir"]
+    example_tmpl_proj = application_param["example_tmpl_proj"]
 
     project_example_path = prepare_proj_resource(board_info, project_path, templates_path, vela_model_file_path, vela_model_cc_file, example_tmpl_dir, example_tmpl_proj)
     print(project_example_path)
 
     # Generate mode.hpp/cpp or main.cpp
-    codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path)
+    if application_usage == 'generic':
+        codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='generic')
+
     codegen.code_gen()
 
     os.remove(vela_model_file_path)
