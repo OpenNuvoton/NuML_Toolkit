@@ -11,9 +11,7 @@ import tarfile
 from git import RemoteProgress
 from tqdm import tqdm
 
-from NNModel_hpp_codegen import NNModelHppCodegen
-from NNModel_cpp_codegen import NNModelCppCodegen
-from main_cpp_codegen import MainCCodegen
+from generic_codegen.generic_codegen import GenericCodegen
 
 PROJECT_GEN_DIR_PREFIX = 'ProjGen_'
 
@@ -25,6 +23,19 @@ board_list = [
 ]
 
 project_type_list = ['uvision5_armc6', 'make_gcc_arm']
+
+application = {
+    "generic"   : {
+                    "board": ['NuMaker-M55M1', 'NuMaker-M467HJ'],
+                    "example_tmpl_dir": "generic_template",
+                    "example_tmpl_proj": "NN_ModelInference"
+                  },
+    "imgclass"  : {
+                    "board": ['NuMaker-M55M1'],
+                    "example_tmpl_dir": "imgclass_template",
+                    "example_tmpl_proj": "NN_ImgClassInference"
+                  },
+}
 
 # git clone progress status
 class CloneProgress(RemoteProgress):
@@ -107,7 +118,7 @@ def generate_model_cpp(output_path, tflite2cpp_dir_path, model_file):
     os.chdir(cur_work_dir)
     return True
 
-def prepare_proj_resource(board_info, project_path, templates_path, vela_model_file, vela_model_cc_file):
+def prepare_proj_resource(board_info, project_path, templates_path, vela_model_file, vela_model_cc_file, example_tmpl_dir, example_tmpl_proj):
     print('copy resources to autogen project directory')
 
     bsp_lib_src_path = os.path.join(templates_path, board_info[2], 'Library')
@@ -187,32 +198,34 @@ def prepare_proj_resource(board_info, project_path, templates_path, vela_model_f
         print('copy bsp library patch to autogen project directory')
         shutil.copytree(bsp_patch_src_path, bsp_dest_path, dirs_exist_ok = True)
 
-    example_template_path = os.path.join(templates_path, board_info[1], board_info[0], 'example_template')
+    example_template_path = os.path.join(templates_path, board_info[1], board_info[0], example_tmpl_dir)
     example_project_path = os.path.join(bsp_dest_path, 'SampleCode', 'MachineLearning')
+    example_project_src_path = os.path.join(example_template_path, example_tmpl_proj)
 
     print(example_template_path)
+    print(example_project_src_path)
     print(example_project_path)
 
     print('copy example template project to autogen MachineLearning example folder')
-    shutil.copytree(example_template_path, example_project_path, dirs_exist_ok = True)
-    example_project_path = os.path.join(example_project_path, 'NN_ModelInference')
-
+    example_project_path = os.path.join(example_project_path, example_tmpl_proj)
+    shutil.copytree(example_project_src_path, example_project_path, dirs_exist_ok = True)
+    
     example_project_model_cpp_file = os.path.join(example_project_path, 'Model', 'NN_Model_INT8.tflite.cpp')
     example_project_model_dir = os.path.join(example_project_path, 'Model')
     shutil.copyfile(vela_model_cc_file, example_project_model_cpp_file)
     shutil.copy(vela_model_file, example_project_model_dir)
 
     print('copy link script')
-    link_script_keil_src_file = os.path.join(templates_path, board_info[1], board_info[0], 'link_script', 'armcc', 'armcc.scatter')
+    link_script_keil_src_file = os.path.join(templates_path, board_info[1], board_info[0], example_tmpl_dir, 'link_script', 'armcc', 'armcc.scatter')
     link_script_keil_dest_file = os.path.join(example_project_path, 'KEIL', 'armcc.scatter')
     shutil.copyfile(link_script_keil_src_file, link_script_keil_dest_file)
 
-    link_script_gcc_src_file = os.path.join(templates_path, board_info[1], board_info[0], 'link_script', 'gcc', 'gcc.ld')
+    link_script_gcc_src_file = os.path.join(templates_path, board_info[1], board_info[0], example_tmpl_dir, 'link_script', 'gcc', 'gcc.ld')
     link_script_gcc_dest_file = os.path.join(example_project_path, 'GCC', 'gcc.ld')
     shutil.copyfile(link_script_gcc_src_file, link_script_gcc_dest_file)
 
     print('copy progen records to autogen project directory')
-    progen_src_path = os.path.join(templates_path, board_info[1], board_info[0], 'progen')
+    progen_src_path = os.path.join(templates_path, board_info[1], board_info[0], example_tmpl_dir, 'progen')
     progen_dest_path = os.path.join(example_project_path, '..')
 
     shutil.copytree(os.path.join(progen_src_path, 'tools'), os.path.join(progen_dest_path, 'tools'), dirs_exist_ok = True)
@@ -296,70 +309,29 @@ def project_generate(args):
         return 'unable_generate'
 
     vela_model_basename = os.path.splitext(os.path.basename(args.model_file))[0]
-    vela_model_file = os.path.join(args.output_path, vela_model_basename + '_vela.tflite')
-    vela_summary_file = os.path.join(args.output_path, vela_model_basename + '_summary_Ethos_U55_High_End_Embedded.csv')
-    print(vela_model_file)
+    vela_model_file_path = os.path.join(args.output_path, vela_model_basename + '_vela.tflite')
+    vela_summary_file_path = os.path.join(args.output_path, vela_model_basename + '_summary_Ethos_U55_High_End_Embedded.csv')
+    print(vela_model_file_path)
 
     #generate model cc file
     tflite2cpp_dir_path = os.path.join(os.path.dirname(__file__), '..', 'tflite2cpp')
     print(tflite2cpp_dir_path)
-    generate_model_cpp(args.output_path, tflite2cpp_dir_path, os.path.abspath(vela_model_file)) 
+    generate_model_cpp(args.output_path, tflite2cpp_dir_path, os.path.abspath(vela_model_file_path)) 
     vela_model_cc_file = os.path.join(args.output_path, vela_model_basename + '_vela.tflite.cc')
     print(vela_model_cc_file)
 
     #prepare project resource
-    project_example_path = prepare_proj_resource(board_info, project_path, templates_path, vela_model_file, vela_model_cc_file)
+    example_tmpl_dir = application["generic"]["example_tmpl_dir"]
+    example_tmpl_proj = application["generic"]["example_tmpl_proj"]
+
+    project_example_path = prepare_proj_resource(board_info, project_path, templates_path, vela_model_file_path, vela_model_cc_file, example_tmpl_dir, example_tmpl_proj)
     print(project_example_path)
 
-    #Generate NNModel.hpp file
-    NNModel_hpp_file_path = os.path.join(project_example_path, 'Model', 'include', 'NNModel.hpp')
-    NNModel_hpp_temp_file_path = os.path.join(templates_path, 'NNModel_hpp_tmpl.jinja2')
-    print(f'NNModel.hpp template path {NNModel_hpp_temp_file_path}')
-    print(f'NNModel.hpp file path {NNModel_hpp_file_path}')
+    # Generate mode.hpp/cpp or main.cpp
+    codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path)
+    codegen.code_gen()
 
-    try:
-        NNModel_hpp_file = open(NNModel_hpp_file_path, "w")
-    except OSError:
-        print("Could not open NNModel.hpp file")
-        return 'unable_generate'
-
-    with NNModel_hpp_file:
-        NNModel_hpp_codegen = NNModelHppCodegen()
-        NNModel_hpp_codegen.code_gen(NNModel_hpp_file, NNModel_hpp_temp_file_path, vela_model_file)
-
-    #Generate NNModel.cpp file
-    NNModel_cpp_file_path = os.path.join(project_example_path, 'Model', 'NNModel.cpp')
-    NNModel_cpp_temp_file_path = os.path.join(templates_path, 'NNModel_cpp_tmpl.jinja2')
-    print(f'NNModel.cpp template path {NNModel_cpp_temp_file_path}')
-    print(f'NNModel.cpp file path {NNModel_cpp_file_path}')
-
-    try:
-        NNModel_cpp_file = open(NNModel_cpp_file_path, "w")
-    except OSError:
-        print("Could not open NNModel.cpp file")
-        return 'unable_generate'
-
-    with NNModel_cpp_file:
-        NNModel_cpp_codegen = NNModelCppCodegen()
-        NNModel_cpp_codegen.code_gen(NNModel_cpp_file, NNModel_cpp_temp_file_path, vela_model_file)
-
-    #Generate main.cpp file
-    main_file_path = os.path.join(project_example_path, 'main.cpp')
-    main_temp_file_path = os.path.join(templates_path, 'main_cpp_tmpl.jinja2')
-    print(f'template path {main_temp_file_path}')
-    print(f'main file path {main_file_path}')
-
-    try:
-        main_file = open(main_file_path, "w")
-    except OSError:
-        print("Could not open main file")
-        return 'unable_generate'
-
-    with main_file:
-        main_codegen = MainCCodegen()
-        main_codegen.code_gen(main_file, main_temp_file_path, vela_summary_file)
-
-    os.remove(vela_model_file)
+    os.remove(vela_model_file_path)
     os.remove(vela_model_cc_file)
 
     #start generate project file (*.uvprojx, Makefile)
@@ -367,7 +339,6 @@ def project_generate(args):
     proj_gen(progen_path, args.project_type, os.path.basename(project_example_path))
     print(f'NN_ModelInference example project completed at {os.path.abspath(project_example_path)}')
     return project_example_path
-
 
 
 
