@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+import traceback
 from project_generate import add_generate_parser
 from project_build import add_build_parser
 from project_flash import add_flash_parser
@@ -66,8 +67,8 @@ def _main(argv):
 
     try:
         return args.func(args)
-    except:
-        sys.stderr.write("run command failed.")
+    except Exception:
+        sys.stderr.write(traceback.format_exc())
         return 1
 
 def main():

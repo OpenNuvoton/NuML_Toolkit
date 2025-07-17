@@ -1,0 +1,19 @@
+common:
+  includes:
+    - NN_ImgClassInference\Device\include
+  sources:
+    Device:
+    - NN_ImgClassInference\Device\HyperRAM\hyperram_code.c
+    - NN_ImgClassInference\Device\ImageSensor\ImageSensor.c
+    - NN_ImgClassInference\Device\ImageSensor\Sensor\Sensor_HM1055.c
+    - NN_ImgClassInference\Device\ImageSensor\Sensor\SWI2C.c
+    - NN_ImgClassInference\Device\Display\Display.c
+    - NN_ImgClassInference\Device\Display\Font8_16.c
+    - NN_ImgClassInference\Device\Display\LCD\LCD_FSA506.c
+    - NN_ImgClassInference\Device\Display\LCD\LCD_ILI9341.c
+    - NN_ImgClassInference\Device\Display\LCD\LCD_LT7381.c
+    - NN_ImgClassInference\Device\Display\drv_pdma.c
+    - NN_ImgClassInference\Device\UVC\descriptors.c
+    - NN_ImgClassInference\Device\UVC\UVC.c
+    - NN_ImgClassInference\Device\SDCard\sdglue.c
+    - ..\..\Library\Storage\diskio_SDH.c

@@ -28,6 +28,10 @@ python setup_progendef.py
         * project_type [option]: Specify generated project type  
             * make_gcc_arm - default
             * uvision5_armc6  
+        * application [option]: Specify application scenario
+            * generic - default
+            * imgclass  
+        * model_arena_size [option]: Specify the size of arena cache memory in bytes
 * Build
     ~~~
     python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]

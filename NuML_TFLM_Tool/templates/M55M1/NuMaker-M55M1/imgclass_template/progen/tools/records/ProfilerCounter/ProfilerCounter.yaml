@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ImgClassInference\ProfilerCounter\include
+  sources:
+    ProfilerCounter:
+    - NN_ImgClassInference\ProfilerCounter

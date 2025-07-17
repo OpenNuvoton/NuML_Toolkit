@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ImgClassInference\Model\include
+  sources:
+    Model:
+    - NN_ImgClassInference\Model

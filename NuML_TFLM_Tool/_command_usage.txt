@@ -10,3 +10,4 @@ python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1
 
 python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\vww4_128_128_INT8.tflite 
 python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\vww4_128_128_INT8.tflite --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
+

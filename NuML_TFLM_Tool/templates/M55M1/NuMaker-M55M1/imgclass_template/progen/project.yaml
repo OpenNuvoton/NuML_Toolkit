@@ -1,0 +1,43 @@
+modules:
+    Application: &module_Application
+        - tools/records/Application/Application.yaml
+    ArmMLApi: &module_ArmMLApi
+        - tools/records/ArmMLApi/ArmMLApi.yaml
+    CMSIS: &module_CMSIS
+        - tools/records/CMSIS/CMSIS.yaml
+    Device: &module_Device
+        - tools/records/Device/Device.yaml
+    Driver: &module_Driver
+        - tools/records/Driver/Driver.yaml
+    FatFs: &module_FatFs
+        - tools/records/FatFs/FatFs.yaml
+    Lib: &module_Lib
+        - tools/records/Lib/Lib.yaml
+    Model: &module_Model
+        - tools/records/Model/Model.yaml
+    NPU: &module_NPU
+        - tools/records/NPU/NPU.yaml
+    ProfilerCounter: &module_ProfilerCounter
+        - tools/records/ProfilerCounter/ProfilerCounter.yaml
+    toolchain_settings: &toolchain_settings
+        - tools/records/toolchain_settings/toolchain_settings.yaml
+
+projects:
+    NN_ImgClassInference:
+        - *module_Application
+        - *module_ArmMLApi
+        - *module_CMSIS
+        - *module_Device
+        - *module_Driver
+        - *module_FatFs
+        - *module_Lib
+        - *module_Model
+        - *module_NPU
+        - *module_ProfilerCounter
+        - *toolchain_settings
+
+settings:
+    tools:
+        uvision:
+            template:
+                - tools/records/templates/Template.uvprojx

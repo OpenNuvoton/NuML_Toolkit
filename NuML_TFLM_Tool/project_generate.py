@@ -12,6 +12,7 @@ from git import RemoteProgress
 from tqdm import tqdm
 
 from generic_codegen.generic_codegen import GenericCodegen
+from imgclass_codegen.imgclass_codegen import ImgClassCodegen
 
 PROJECT_GEN_DIR_PREFIX = 'ProjGen_'
 
@@ -34,6 +35,11 @@ application = {
                     "board": ['NuMaker-M55M1'],
                     "example_tmpl_dir": "imgclass_template",
                     "example_tmpl_proj": "NN_ImgClassInference"
+                  },
+    "objdet"  : {
+                    "board": ['NuMaker-M55M1'],
+                    "example_tmpl_dir": "objdet_template",
+                    "example_tmpl_proj": "NN_ObjDetInference"
                   },
 }
 
@@ -58,6 +64,7 @@ def add_generate_parser(subparsers, _):
     parser.add_argument("--board", help="specify target board name", required=True)
     parser.add_argument("--project_type", help="specify project type uvision5_armc6/make_gcc_arm", default='make_gcc_arm')
     parser.add_argument("--templates_path", help="specify template path")
+    parser.add_argument("--model_arena_size", help="specify the size of arena cache memory in bytes", default='0')
     parser.add_argument("--application", help="specify application scenario generic/imgclass", default='generic')
 
 # download board BSP
@@ -69,7 +76,7 @@ def download_bsp(board_info, templates_path):
     git.Repo.clone_from(board_info[3], bsp_path, branch='master', recursive=False, progress=CloneProgress())
 
 # INT8 model compile by vela
-def model_compile(board_info, output_path, vela_dir_path, model_file):
+def model_compile(board_info, output_path, vela_dir_path, model_file, model_arena_size):
     cur_work_dir = os.getcwd()
     os.chdir(output_path)
     vela_exe = os.path.join(vela_dir_path, 'vela-4_0_1.exe')    
@@ -78,9 +85,13 @@ def model_compile(board_info, output_path, vela_dir_path, model_file):
     print(output_path)
     print(vela_conifg_option)
     print(model_file)
+    print(model_arena_size)
     print(vela_exe)
 
     vela_cmd = [vela_exe, model_file, '--accelerator-config=ethos-u55-256', '--optimise=Performance', vela_conifg_option, '--memory-mode=Shared_Sram', '--system-config=Ethos_U55_High_End_Embedded', '--output-dir=.']
+
+    if int(model_arena_size) > 0:
+        vela_cmd.extend(['--arena-cache-size', model_arena_size])
 
     print(vela_cmd)
     ret =subprocess.run(vela_cmd)
@@ -237,7 +248,7 @@ def prepare_proj_resource(board_info, project_path, templates_path, vela_model_f
 def proj_gen(progen_path, project_type, project_dir_name):
     cur_work_dir = os.getcwd()
     os.chdir(progen_path)
-    progen_cmd = ['progen', 'generate', '-f', 'project.yaml', '-p', 'NN_ModelInference']
+    progen_cmd = ['progen', 'generate', '-f', 'project.yaml', '-p', project_dir_name]
     progen_cmd.append('-t')
     progen_cmd.append(project_type)
     ret =subprocess.run(progen_cmd)
@@ -308,11 +319,12 @@ def project_generate(args):
         os.mkdir(project_path)
 
     #model compile by vela
+    arena_size = args.model_arena_size
     vela_dir_path = os.path.join(os.path.dirname(__file__), '..', 'vela')
 
     """ temp del for testing
     """
-    ret = model_compile(board_info, args.output_path, vela_dir_path, os.path.abspath(args.model_file))
+    ret = model_compile(board_info, args.output_path, vela_dir_path, os.path.abspath(args.model_file), arena_size)
     if ret == False:
         return 'unable_generate'
 
@@ -338,6 +350,8 @@ def project_generate(args):
     # Generate mode.hpp/cpp or main.cpp
     if application_usage == 'generic':
         codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='generic')
+    elif application_usage == 'imgclass':
+        codegen = ImgClassCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='imagclass')
 
     codegen.code_gen()
 
@@ -347,7 +361,7 @@ def project_generate(args):
     #start generate project file (*.uvprojx, Makefile)
     progen_path = os.path.join(project_example_path, '..')
     proj_gen(progen_path, args.project_type, os.path.basename(project_example_path))
-    print(f'NN_ModelInference example project completed at {os.path.abspath(project_example_path)}')
+    print(f'Example project completed at {os.path.abspath(project_example_path)}')
     return project_example_path
 
 
