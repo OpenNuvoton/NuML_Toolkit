@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 from generic_codegen.generic_codegen import GenericCodegen
 from imgclass_codegen.imgclass_codegen import ImgClassCodegen
+from objdet_codegen.objdet_codegen import ObjDetCodegen
 
 PROJECT_GEN_DIR_PREFIX = 'ProjGen_'
 
@@ -65,6 +66,7 @@ def add_generate_parser(subparsers, _):
     parser.add_argument("--project_type", help="specify project type uvision5_armc6/make_gcc_arm", default='make_gcc_arm')
     parser.add_argument("--templates_path", help="specify template path")
     parser.add_argument("--model_arena_size", help="specify the size of arena cache memory in bytes", default='0')
+    parser.add_argument("--vela_extra_option", help="specify vela extra options")
     parser.add_argument("--application", help="specify application scenario generic/imgclass", default='generic')
 
 # download board BSP
@@ -76,7 +78,7 @@ def download_bsp(board_info, templates_path):
     git.Repo.clone_from(board_info[3], bsp_path, branch='master', recursive=False, progress=CloneProgress())
 
 # INT8 model compile by vela
-def model_compile(board_info, output_path, vela_dir_path, model_file, model_arena_size):
+def model_compile(board_info, output_path, vela_dir_path, model_file, model_arena_size, extra_option):
     cur_work_dir = os.getcwd()
     os.chdir(output_path)
     vela_exe = os.path.join(vela_dir_path, 'vela-4_0_1.exe')    
@@ -92,6 +94,11 @@ def model_compile(board_info, output_path, vela_dir_path, model_file, model_aren
 
     if int(model_arena_size) > 0:
         vela_cmd.extend(['--arena-cache-size', model_arena_size])
+
+    if extra_option != None:
+        print(extra_option)
+        extra_option_parts = extra_option.split()
+        vela_cmd.extend(extra_option_parts)
 
     print(vela_cmd)
     ret =subprocess.run(vela_cmd)
@@ -324,7 +331,7 @@ def project_generate(args):
 
     """ temp del for testing
     """
-    ret = model_compile(board_info, args.output_path, vela_dir_path, os.path.abspath(args.model_file), arena_size)
+    ret = model_compile(board_info, args.output_path, vela_dir_path, os.path.abspath(args.model_file), arena_size, args.vela_extra_option)
     if ret == False:
         return 'unable_generate'
 
@@ -352,6 +359,8 @@ def project_generate(args):
         codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='generic')
     elif application_usage == 'imgclass':
         codegen = ImgClassCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='imagclass')
+    elif application_usage == 'objdet':
+        codegen = ObjDetCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='objdet')
 
     codegen.code_gen()
 

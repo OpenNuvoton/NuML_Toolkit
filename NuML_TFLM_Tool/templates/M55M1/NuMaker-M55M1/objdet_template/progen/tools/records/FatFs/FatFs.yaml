@@ -1,0 +1,7 @@
+common:
+  includes:
+    - ..\..\ThirdParty\FatFs\source
+  sources:
+    FatFs:
+    - ..\..\ThirdParty\FatFs\source\ff.c
+    - ..\..\ThirdParty\FatFs\source\ffunicode.c

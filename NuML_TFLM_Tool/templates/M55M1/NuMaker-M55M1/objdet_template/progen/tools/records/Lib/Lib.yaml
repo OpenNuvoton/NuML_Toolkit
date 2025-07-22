@@ -1,0 +1,31 @@
+common:
+  includes:
+    - ..\..\Library\CMSIS\NN\Include
+    - ..\..\Library\CMSIS\DSP\Include
+    - ..\..\ThirdParty\tflite_micro
+    - ..\..\ThirdParty\tflite_micro\_deps\tensorflow-flatbuffers-src\include
+    - ..\..\ThirdParty\tflite_micro\_deps\tensorflow-gemlowp-src
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\api\common\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\math\
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\application\main\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include
+    - ..\..\ThirdParty\openmv\omv\imlib
+    - ..\..\ThirdParty\openmv\omv\alloc
+    - ..\..\ThirdParty\openmv\omv\common
+    - ..\..\ThirdParty\openmv\omv\Lib
+tool_specific:
+  gcc_arm:
+    sources:
+      Lib:
+      - ..\..\Library\CMSIS\Lib\GCC\libCMSIS_DSP.a
+      - ..\..\Library\CMSIS\Lib\GCC\libCMSIS_NN.a
+      - ..\..\ThirdParty\tflite_micro\Lib\libtflu.a
+      - ..\..\ThirdParty\openmv\omv\Lib\libomv.a
+  uvision5_armc6:
+    sources:
+      Lib:
+      - ..\..\Library\CMSIS\Lib\KEIL\cmsis_dsp.lib
+      - ..\..\Library\CMSIS\Lib\KEIL\cmsis_nn.lib
+      - ..\..\ThirdParty\tflite_micro\Lib\tflu.lib
+      - ..\..\ThirdParty\openmv\omv\Lib\omv.lib

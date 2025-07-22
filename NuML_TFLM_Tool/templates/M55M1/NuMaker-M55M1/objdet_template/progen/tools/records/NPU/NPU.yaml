@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ObjDetInference\NPU\include
+  sources:
+    NPU:
+    - NN_ObjDetInference\NPU

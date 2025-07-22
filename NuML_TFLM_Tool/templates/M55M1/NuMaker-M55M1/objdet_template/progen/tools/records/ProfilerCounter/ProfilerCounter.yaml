@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ObjDetInference\ProfilerCounter\include
+  sources:
+    ProfilerCounter:
+    - NN_ObjDetInference\ProfilerCounter

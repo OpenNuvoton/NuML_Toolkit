@@ -30,7 +30,8 @@ python setup_progendef.py
             * uvision5_armc6  
         * application [option]: Specify application scenario
             * generic - default
-            * imgclass  
+            * imgclass (MobileNetV2)
+            * objdet (YOLOv8n 256x256/224x224/192x192) 
         * model_arena_size [option]: Specify the size of arena cache memory in bytes
 * Build
     ~~~

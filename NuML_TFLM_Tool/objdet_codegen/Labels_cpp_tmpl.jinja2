@@ -1,0 +1,33 @@
+
+#include "BufAttributes.hpp"
+
+#include <vector>
+#include <string>
+
+static const char *labelsVec[] LABELS_ATTRIBUTE =
+{
+    {% for label_item in labels %}
+    "{{label_item}}",
+    {% endfor %}
+};
+
+bool GetLabelsVector(std::vector<std::string> &labels)
+{
+    constexpr size_t labelsSz = {{labels_size}};
+    labels.clear();
+
+    if (!labelsSz)
+    {
+        return false;
+    }
+
+    labels.reserve(labelsSz);
+
+    for (size_t i = 0; i < labelsSz; ++i)
+    {
+        labels.emplace_back(labelsVec[i]);
+    }
+
+    return true;
+}
+

@@ -1,0 +1,6 @@
+common:
+  includes:
+    - NN_ObjDetInference\Model\include
+  sources:
+    Model:
+    - NN_ObjDetInference\Model
