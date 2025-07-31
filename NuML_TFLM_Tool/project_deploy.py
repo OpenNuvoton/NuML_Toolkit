@@ -15,6 +15,9 @@ def add_deploy_parser(subparsers, _):
     parser.add_argument("--project_type", help="specify project type uvision5_armc6/make_gcc_arm", default='make_gcc_arm')
     parser.add_argument("--templates_path", help="specify template path")
     parser.add_argument("--ide_tool", help="specify IDE tool")
+    parser.add_argument("--application", help="specify application scenario generic/imgclass", default='generic')
+    parser.add_argument("--model_arena_size", help="specify the size of arena cache memory in bytes", default='0')
+    parser.add_argument("--vela_extra_option", help="specify vela extra options")
 
 def project_deploy(args):
     project_path = project_generate(args)

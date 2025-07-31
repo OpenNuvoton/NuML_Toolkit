@@ -6,6 +6,7 @@ import subprocess
 def uvision5_build(args, proj_file_dir, proj_name):
     print('checking build tool ...')
     uv4_util = args.ide_tool
+    print(uv4_util)
 
     if uv4_util == None:
         uv4_util = shutil.which('UV4.exe')

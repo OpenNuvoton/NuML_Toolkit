@@ -354,7 +354,7 @@ def project_generate(args):
     project_example_path = prepare_proj_resource(board_info, project_path, templates_path, vela_model_file_path, vela_model_cc_file, example_tmpl_dir, example_tmpl_proj)
     print(project_example_path)
 
-    # Generate mode.hpp/cpp or main.cpp
+    # Generate model.hpp/cpp or main.cpp
     if application_usage == 'generic':
         codegen = GenericCodegen.from_args(vela_model_file_path, project_example_path, vela_summary_file_path, app='generic')
     elif application_usage == 'imgclass':
