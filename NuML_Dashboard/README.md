@@ -22,6 +22,6 @@ python Dashboard.py
 ~~~
 2. Open a browser(Chrome/Edge) and go to http://127.0.0.1:5000
 
-![Project Generator](Picture/project_generator.png)
+![Project Generator](picture/project_generator.png)
   
-![Viewer](Picture/viewer.png)  
+![Viewer](picture/viewer.png)  
