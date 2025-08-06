@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+            rel="stylesheet">
+
+    <title>Nuvoton ML Toolkit Dashboard</title>
+    <style>
+    .tabs {
+        display: flex;
+        border-bottom: 2px solid #ccc;
+    }
+    .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        margin-right: 5px;
+        background-color: #f0f0f0;
+    }
+    .tab.active {
+        background-color: #ffffff;
+        font-weight: bold;
+    }
+
+    .content {
+        display: flex;
+        padding: 20px;
+        background-color: #ffffff;
+    }
+    .content > div {
+        display: none;
+    }
+    .content > div.active {
+        display: block;
+    }
+
+    </style>
+    <!--
+    term.js
+    Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
+    Copyright (c) 2016, Paul Sokolovsky
+    -->
+    <script src="../static/term.js"></script>
+    <!--
+    <script type = "text/javascript" src = "{{ url_for('static', filename = 'term.js') }}" ></script>
+    -->
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-danger bg-gradient text-white text-center py-4">
+        <h1>Nuvoton ML Toolkit Dashboard</h1>
+    </header>
+    <br>
+    <div class="tabs">
+    <div class="tab active" onclick="showTab('generator')">Project Generator</div>
+    <div class="tab" onclick="showTab('viewer')">Viewer</div>
+    </div>
+
+    <div class="content">
+    <!-- Project Generator tab -->
+    <div id="generator" class="active">
+        <form method="POST" enctype="multipart/form-data" action="/upload">
+        <input type="file" name="file" accept=".tflite" />
+        <input type="submit" value="Upload tflite" >
+        </form>
+        <br>
+        <form action="/UV4" method="POST">
+        <label for="uv4">UV4.exe Directory</label>
+        <input type="text" id="uv4_dir" name="uv4_dir" value={{uv4_dir_path}}>
+        <input type="submit" value = "Set UV4 Directory">
+        </form>
+        <br>
+        <form action="/application" method="POST">
+        <label for="application">Application Scenarios</label>
+        <select id="app" name="application">
+            {% for key, value in app_info.items() %}            
+               <option value="{{ key }}" {% if key == app_sel %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+        </form>
+        <br>
+        <form action="/arena" method="POST">
+            <label>
+            <input type="checkbox" name="enable_arena" {% if enable_custom_arena %}checked{% endif %} onchange="document.getElementById('arena_size').disabled = !this.checked">
+            Enable Custom Arena Size
+            </label>
+            <br>
+            <input type="range" name="arena_size" id="arena_size" min="0" max="1024000" step="102400" value="{{arena_size}}" list="values" {% if not enable_custom_arena %}disabled{% endif %} >
+            <input type="submit" value="Submit">
+            <datalist id="values">
+            <option value="0" label="0"></option>
+            <option value="102400"></option>
+            <option value="204800"></option>
+            <option value="307200"></option>
+            <option value="409600"></option>
+            <option value="512000"></option>
+            <option value="614400"></option>
+            <option value="716800"></option>
+            <option value="819200"></option>
+            <option value="921600"></option>
+            <option value="1024000"></option>
+            </datalist>
+            <p>Arena Size: <output id="arena_value"></output></p>
+        </form>
+        <h2>Configuration</h2>
+        <p>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+        </p> 
+        <button id ="GenerateButton" onclick="startSSE()" {{generate_disable}}>Start Generate</button>
+        <br>
+        <br>
+        <h2>Console</h2>
+        <div id ="output"></div>
+        <textarea readonly id="SSETextarea" name="SSETextarea" rows="10" cols="150" ></textarea>
+    </div>
+    <!-- Viewer tab -->
+    <div id="viewer">
+        <!-- UART termainal -->
+        <div class="item">
+            <p>UART Terminal</p>
+            <p>Serial Port Speed:</p> 
+            <select name="speed" id="SerialSpeed">
+            <option value="1200">1200</option>
+            <option value="2400">2400</option>
+            <option value="4800">4800</option>
+            <option value="9600">9600</option>
+            <option value="19200">19200</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="115200">115200</option>
+            </select>
+            <button id="SerialConnectButton" type="button" disabled>Connect</button>
+            <br>
+            <br>
+            <div id="term">
+            </div>
+        </div>
+        <!-- Image viewer -->
+        <div class="item">
+            <p>Image Viewer</p>
+            <video id="vid" controls></video>
+            <script>
+                const x = document.getElementById('vid');
+                const mycanvas = document.getElementById('mytutorial');
+                const a = {
+                video: true,
+                };
+                navigator.mediaDevices.getUserMedia(a).then((stream) => {
+                x.srcObject = stream;
+                });
+            </script>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const value = document.querySelector("#arena_value");
+        const input = document.querySelector("#arena_size");
+        value.textContent = input.value;
+        input.addEventListener("input", (event) => {
+        value.textContent = event.target.value;
+        });
+
+    function showTab(tabId) {
+        // switch tab content
+        document.querySelectorAll('.content > div').forEach(div => {
+        div.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+
+        // updatae tab class
+        document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+    </script>
+</body>
+    <script>
+        /*-- generator message box -- */
+        function startSSE() {
+            var eventSource = new EventSource("/stream");
+            document.getElementById('GenerateButton').disabled = true;
+            eventSource.onmessage = function(e) {
+                    document.getElementById("SSETextarea").innerHTML += e.data + "&#10";  /*Textarea not support <br> and "\n\r"*/
+                    var textarea = document.getElementById('SSETextarea');
+                    textarea.scrollTop = textarea.scrollHeight;
+            };
+
+            eventSource.addEventListener('message', function(e) {
+                var data = e.data;
+                if (!data) {
+                    return;
+                }
+                if (data === 'finished') {
+                    eventSource.close()
+                    document.getElementById('GenerateButton').disabled = false;
+                }
+            });
+        }
+
+        /*-- UART termainal -- */
+        var term;
+
+        function calculate_size(win) {
+        var cols = Math.max(80, Math.min(80, (win.innerWidth - 280) / 7)) | 0;
+        var rows = Math.max(24, Math.min(20, (win.innerHeight - 180) / 12)) | 0;
+        return [cols, rows];
+        }
+
+        (function() {
+        window.onload = function() {
+
+            var size = calculate_size(self);
+            term = new Terminal({
+            cols: size[0],
+            rows: size[1],
+            useStyle: true,
+            screenKeys: true,
+            cursorBlink: false
+            });
+            term.open(document.getElementById("term"));
+        };
+        window.addEventListener('resize', function() {
+            var size = calculate_size(self);
+            term.resize(size[0], size[1]);
+        });
+        }).call(this);
+
+
+        /*
+        * Web Serial API (Google Chrome)
+        *
+        * Useful information used to this implementation:
+        * https://github.com/svendahlstrand/web-serial-api/
+        * https://dev.to/unjavascripter/the-amazing-powers-of-the-web-web-serial-api-3ilc
+        *
+        */
+
+        const connectButton = document.getElementById ('SerialConnectButton');
+        let port;
+        let aborter;
+        let readableStreamClosed;
+        let writableStreamClosed;
+
+        if ('serial' in navigator) {
+        connectButton.addEventListener('click', async function () {
+        if (port) {
+            term.write('\x1b[31mDisconnected from Serial Port\x1b[m\r\n');
+            aborter.abort();
+            await writableStreamClosed;
+            await readableStreamClosed.catch(() => {});
+            await port.close();
+            port = undefined;
+            connectButton.innerText = 'Connect';
+            document.getElementById('SerialSpeed').disabled = false;
+
+        }
+        else {
+            connectButton.innerText = 'Disconnect';
+            getReader();
+
+            term.on('data', function(data) {
+                serialWrite(data);
+            });
+        }
+        });
+
+        connectButton.disabled = false;
+        }
+        else {
+        const error = document.createElement('p');
+        error.innerHTML = '<p>Support for Serial Web API not enabled. Please enable it using chrome://flags/ and enable Experimental Web Platform fetures</p>';
+
+        }
+
+
+        let lineBuffer = '';
+        let latestValue = 0;
+
+        async function serialWrite(data) {
+        encoder = new TextEncoder();
+        const dataArrayBuffer = encoder.encode(data);
+
+        if (port && port.writable) {
+            const writer = port.writable.getWriter();
+            writableStreamClosed = encoder.readable.pipeTo(port.writable);
+            writer.write(dataArrayBuffer);
+            writer.releaseLock();
+        }
+        }
+
+        async function getReader() {
+            port = await navigator.serial.requestPort({});
+        var e = document.getElementById("SerialSpeed");
+        var strSpd = e.options[e.selectedIndex].value;
+
+        var speed = parseInt(strSpd);
+        await port.open({ baudRate: [speed] });
+
+        document.getElementById('SerialSpeed').disabled = true;
+
+            connectButton.innerText = 'Disconnect';
+            term.write('\x1b[31mConnected using Web Serial API !\x1b[m\r\n');
+
+            const appendStream = new WritableStream({
+                write(chunk) {
+            term.write(chunk);
+                }
+            });
+
+            aborter = new AbortController;
+            const textDecoder = new TextDecoderStream();
+            readableStreamClosed = port.readable
+                .pipeThrough(textDecoder)
+                .pipeTo(appendStream, aborter);
+            }
+    </script>
+</html>

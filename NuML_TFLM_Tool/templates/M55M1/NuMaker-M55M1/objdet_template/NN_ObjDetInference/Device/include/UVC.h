@@ -181,7 +181,7 @@ extern "C"
 #define UVC_Foramt_MJPEG    2
 #define UVC_Format_RGB565   3
 
-#define UVC_Color_Format    UVC_Format_RGB565
+#define UVC_Color_Format    UVC_Format_YUY2
 
 /*-----------------------------------------*/
 #ifdef  __cplusplus

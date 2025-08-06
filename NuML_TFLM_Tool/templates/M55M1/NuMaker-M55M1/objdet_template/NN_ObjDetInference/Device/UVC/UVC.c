@@ -29,6 +29,7 @@ static volatile VIDEOSTREAMCMDDATA  VideoStreamCmdCtlData  __attribute__((aligne
 void HSUSBD_IRQHandler(void)
 {
     volatile uint32_t IrqStL, IrqSt;
+    uint32_t u32TimeOutCnt;
 
     IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
 
@@ -105,12 +106,18 @@ void HSUSBD_IRQHandler(void)
             {
                 /* USB Plug In */
                 HSUSBD_ENABLE_USB();
+                u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+                while (!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+                    if (--u32TimeOutCnt == 0) break;
+
             }
             else
             {
                 gAppConnected = 0;
                 /* USB Un-plug */
                 HSUSBD_DISABLE_USB();
+                HSUSBD->OPER &= ~HSUSBD_OPER_HISHSEN_Msk;
             }
 
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_VBUSDETIF_Msk);
@@ -640,9 +647,9 @@ void UVC_SetInterface(uint32_t u32AltInterface)
 
     if (gUsbCmd.wValue == 0)
     {
+        g_hsusbd_DmaDone = 1;
         /* stop usbd dma and flush FIFO */
         HSUSBD_ResetDMA();
-        g_hsusbd_DmaDone = 1;
         HSUSBD->EP[EPA].EPRSPCTL |= HSUSBD_EPRSPCTL_FLUSH_Msk;
     }
 }
@@ -945,8 +952,13 @@ void UVC_PU_Control(int16_t Value)
 }
 
 
-void UVC_ActiveDMA(uint32_t u32Addr, uint32_t u32Len)
+int32_t UVC_ActiveDMA(uint32_t u32Addr, uint32_t u32Len)
 {
+    if (gAppConnected == 0)
+    {
+        return -1;
+    }
+
     /* Enable BUS interrupt */
     HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_DMADONEIEN_Msk | HSUSBD_BUSINTEN_SUSPENDIEN_Msk | HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_VBUSDETIEN_Msk);
 
@@ -971,6 +983,8 @@ void UVC_ActiveDMA(uint32_t u32Addr, uint32_t u32Len)
             break;
         }
     }
+
+    return 0;
 }
 
 
@@ -979,6 +993,7 @@ void UVC_IsoIn(uint32_t u32Addr, uint32_t u32Len)
     uint32_t u32Loop, toggle = 0;
     uint32_t i, header;
     uint8_t *ptr;
+    int32_t ret;
 
     if (uvcInfo.bChangeData == 1)
     {
@@ -1016,12 +1031,15 @@ void UVC_IsoIn(uint32_t u32Addr, uint32_t u32Len)
                     HSUSBD->EP[EPA].EPDAT_BYTE = *ptr & 0xff;
                     HSUSBD->EP[EPA].EPDAT_BYTE = *(ptr + 1) & 0xff;
 
-                    UVC_ActiveDMA((uint32_t)(ptr + 2), USBD_MAX_DMA_LEN - 2);
+                    ret = UVC_ActiveDMA((uint32_t)(ptr + 2), USBD_MAX_DMA_LEN - 2);
                 }
                 else
                 {
-                    UVC_ActiveDMA((uint32_t)ptr, USBD_MAX_DMA_LEN);
+                    ret = UVC_ActiveDMA((uint32_t)ptr, USBD_MAX_DMA_LEN);
                 }
+
+                if (ret != 0)
+                    return;
 
                 toggle ^= 1;
                 ptr += USBD_MAX_DMA_LEN;
@@ -1050,12 +1068,15 @@ void UVC_IsoIn(uint32_t u32Addr, uint32_t u32Len)
                     HSUSBD->EP[EPA].EPDAT_BYTE = *ptr & 0xff;
                     HSUSBD->EP[EPA].EPDAT_BYTE = *(ptr + 1) & 0xff;
 
-                    UVC_ActiveDMA((uint32_t)(ptr + 2), u32Loop - 2);
+                    ret = UVC_ActiveDMA((uint32_t)(ptr + 2), u32Loop - 2);
                 }
                 else
                 {
-                    UVC_ActiveDMA((uint32_t)ptr, u32Loop);
+                    ret = UVC_ActiveDMA((uint32_t)ptr, u32Loop);
                 }
+
+                if (ret != 0)
+                    return;
 
                 g_u8UVC_FID++;
                 break;
@@ -1071,6 +1092,7 @@ int UVC_SendImage(uint32_t u32Addr, uint32_t u32transferSize, uint32_t bStillIma
         //printf("send: 0x%x, %d (%d)\n", u32Addr, u32transferSize, bStillImage);
         uvcStatus.bReady = 0;
 
+        HSUSBD->EP[EPA].EPRSPCTL |= HSUSBD_EPRSPCTL_FLUSH_Msk;
         HSUSBD_ResetDMA();
 
         if (bStillImage)
@@ -1093,7 +1115,6 @@ bool UVC_IsConnect(void)
 {
     if ((gAppConnected) && (HSUSBD_IS_ATTACHED()))
         return TRUE;
-
     return FALSE;
 }
 

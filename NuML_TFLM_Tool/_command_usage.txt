@@ -11,3 +11,9 @@ python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1
 python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\vww4_128_128_INT8.tflite 
 python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\vww4_128_128_INT8.tflite --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
 
+#application option
+python numl_tool.py generate --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\yolov8n_od_192_INT8.tflite --application objdet --project_type uvision5_armc6
+
+
+#vela arena and extra options
+python numl_tool.py generate --output_path ..\NuML_Gen --board NuMaker-M55M1 --model_file ..\models\TeachableMachine_full_int8.tflite --model_arena_size 512000 --application imgclass --project_type uvision5_armc6 --vela_extra_option="--verbose-schedule --verbose-graph"
