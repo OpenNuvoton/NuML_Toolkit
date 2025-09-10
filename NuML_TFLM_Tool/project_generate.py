@@ -67,7 +67,7 @@ def add_generate_parser(subparsers, _):
     parser.add_argument("--templates_path", help="specify template path")
     parser.add_argument("--model_arena_size", help="specify the size of arena cache memory in bytes", default='0')
     parser.add_argument("--vela_extra_option", help="specify vela extra options")
-    parser.add_argument("--application", help="specify application scenario generic/imgclass", default='generic')
+    parser.add_argument("--application", help="specify application scenario generic/imgclass/objdet", default='generic')
 
 # download board BSP
 def download_bsp(board_info, templates_path):

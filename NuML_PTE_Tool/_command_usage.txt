@@ -1,0 +1,13 @@
+python numl_tool.py generate --output_path ..\NuML_Gen --board NuMaker-M55M1 --pte_file ..\PTE\mv2.pte
+python numl_tool.py generate --output_path ..\NuML_Gen --board NuMaker-M55M1 --pte_file ..\PTE\mv2.pte --project_type uvision5_armc6
+
+
+python numl_tool.py build --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference
+python numl_tool.py build --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
+
+python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1
+python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --project_type uvision5_armc6 --board NuMaker-M55M1
+python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --binary_file ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference\KEIL\build\NN_ModelInference.bin --board NuMaker-M55M1
+
+python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --pte_file ..\PTE\mv2.pte 
+python numl_tool.py deploy --output_path ..\NuML_Gen --board NuMaker-M55M1 --pte_file ..\PTE\mv2.pte --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe

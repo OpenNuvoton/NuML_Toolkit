@@ -1,0 +1,43 @@
+tool_specific:
+  uvision5_armc6:
+    macros:
+      - NVT_VECTOR_ON_FLASH
+      - ARM_NPU
+      - C10_USING_CUSTOM_GENERATED_MACROS
+    linker_file:
+      - NN_ModelInference\KEIL\armcc.scatter
+  make_gcc_arm:
+    macros:
+      - NVT_VECTOR_ON_FLASH
+      - ARM_NPU
+      - C10_USING_CUSTOM_GENERATED_MACROS
+    misc:
+      standard_libraries:
+        - m
+        - gcc
+        - c
+        - stdc++
+      common_flags:
+        - -mfloat-abi=hard
+        - -O1
+        - -g
+        - -ggdb
+        - -Wall
+        - -fno-strict-aliasing
+        - -ffunction-sections
+        - -fdata-sections
+        - -fno-exceptions
+        - -fno-delete-null-pointer-checks
+        - -fmessage-length=0
+        - -fno-builtin
+        - -mthumb
+      ld_flags:
+        - -specs=nosys.specs
+        - -Wl,--gc-sections
+      cxx_flags:
+        - -fno-rtti
+        - -std=c++17
+      c_flags:
+        - -std=c11
+    linker_file:
+      - NN_ModelInference\GCC\gcc.ld

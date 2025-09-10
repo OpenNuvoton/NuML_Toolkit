@@ -58,7 +58,7 @@ def _main(argv):
         args.verbose = 3
 
     if args.version:
-        sys.stdout.write("v.0.01 \n")
+        sys.stdout.write("v1.3.1 \n")
         return 0
     if not hasattr(args, "func"):
         # In case no valid subcommand is provided, show usage and exit

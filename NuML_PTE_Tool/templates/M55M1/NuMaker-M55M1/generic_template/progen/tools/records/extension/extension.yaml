@@ -1,0 +1,5 @@
+common:
+  sources:
+    extension:
+    - ..\..\ThirdParty\executorch\extension\runner_util\inputs.cpp
+    - ..\..\ThirdParty\executorch\extension\runner_util\inputs_portable.cpp

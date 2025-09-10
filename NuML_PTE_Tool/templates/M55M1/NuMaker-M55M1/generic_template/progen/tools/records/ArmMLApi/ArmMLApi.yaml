@@ -1,0 +1,7 @@
+common:
+  includes:
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\log\include
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\include
+  sources:
+    ArmMLApi:
+    - ..\..\ThirdParty\ml-embedded-evaluation-kit\source\profiler\Profiler.cpp

@@ -1,0 +1,8 @@
+common:
+  includes:
+    - NN_ModelInference\Device\include
+  sources:
+    Device:
+    - NN_ModelInference\Device\HyperRAM\hyperram_code.c
+    - NN_ModelInference\Device\SDCard\sdglue.c
+    - ..\..\Library\Storage\diskio_SDH.c

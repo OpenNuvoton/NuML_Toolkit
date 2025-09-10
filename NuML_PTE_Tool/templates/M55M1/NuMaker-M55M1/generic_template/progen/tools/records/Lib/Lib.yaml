@@ -1,0 +1,23 @@
+common:
+  includes:
+    - ..\..\ThirdParty\executorch\_prebuilt\kernels
+    - ..\..\ThirdParty
+    - ..\..\ThirdParty\executorch\runtime\core\portable_type\c10    
+tool_specific:
+  gcc_arm:
+    sources:
+      Lib:
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch.a
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch_core.a
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch_delegate_ethos_u.a
+      - ..\..\ThirdParty\executorch\Lib\libportable_kernels.a
+      - ..\..\ThirdParty\executorch\Lib\libquantized_kernels.a
+  uvision5_armc6:
+    sources:
+      Lib:
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch.lib
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch_core.lib
+      - ..\..\ThirdParty\executorch\Lib\libexecutorch_delegate_ethos_u.lib
+      - ..\..\ThirdParty\executorch\Lib\libportable_kernels.lib
+      - ..\..\ThirdParty\executorch\Lib\libquantized_kernels.lib
+
