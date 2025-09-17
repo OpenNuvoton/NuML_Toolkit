@@ -365,6 +365,28 @@ int main()
 
 #endif
 
+        //resize framebuffer image to model input
+        image_t resizeImg;
+
+        roi.x = 0;
+        roi.y = 0;
+        roi.w = frameBuffer.w;
+        roi.h = frameBuffer.h;
+
+        resizeImg.w = inputImgCols;
+        resizeImg.h = inputImgRows;
+        resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
+        resizeImg.pixfmt = PIXFORMAT_RGB888;
+
+#if defined(__PROFILE__)
+        u64StartCycle = pmu_get_systick_Count();
+#endif
+        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
+#if defined(__PROFILE__)
+        u64EndCycle = pmu_get_systick_Count();
+        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
+#endif
+
 #if defined (__USE_UVC__)
         if(UVC_IsConnect())
         {
@@ -387,7 +409,6 @@ int main()
             roi.w = RGB565Img.w;
             roi.h = RGB565Img.h;
             imlib_nvt_scale(&RGB565Img, &YUV422Img, &roi);
-
 #else
             image_t origImg;
             image_t vflipImg;
@@ -406,30 +427,6 @@ int main()
 #endif
             UVC_SendImage((uint32_t)frameBuffer.data, IMAGE_FB_SIZE, uvcStatus.StillImage);				
         }
-
-#endif
-
-
-        //resize framebuffer image to model input
-        image_t resizeImg;
-
-        roi.x = 0;
-        roi.y = 0;
-        roi.w = frameBuffer.w;
-        roi.h = frameBuffer.h;
-
-        resizeImg.w = inputImgCols;
-        resizeImg.h = inputImgRows;
-        resizeImg.data = (uint8_t *)inputTensor->data.data; //direct resize to input tensor buffer
-        resizeImg.pixfmt = PIXFORMAT_RGB888;
-
-#if defined(__PROFILE__)
-        u64StartCycle = pmu_get_systick_Count();
-#endif
-        imlib_nvt_scale(&frameBuffer, &resizeImg, &roi);
-#if defined(__PROFILE__)
-        u64EndCycle = pmu_get_systick_Count();
-        info("resize cycles %llu \n", (u64EndCycle - u64StartCycle));
 #endif
 
         //Capture new image

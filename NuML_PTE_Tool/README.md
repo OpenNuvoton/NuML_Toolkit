@@ -18,10 +18,10 @@ python setup_progendef.py
 ## Usage
 * Generate
     ~~~
-    python numl_tool.py generate --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6]
+    python numl_tool.py generate --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen [--project_type uvision5_armc6]
     ~~~  
     * Parameter  
-        * pte_file: Specify ExecuTorch PTE file which supported Arm EthosU backend
+        * pte_file: A ExecuTorch PTE file which supported Arm EthosU backend. You should follow [Arm(R) Ethos(TM)-U NPU Backend](https://docs.pytorch.org/executorch/stable/backends-arm-ethos-u.html) tutorial to convert the PTE file. The "models\mv2.pte" file is only for testing.
         * board: Supported board name  
             * NuMaker_M55M1
         * output_path: Ouput directory path of generated project
@@ -32,7 +32,7 @@ python setup_progendef.py
             * generic - default
 * Build
     ~~~
-    python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
+    python numl_tool.py build --project_path ..\NuML_Gen\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
     ~~~
     * Parameter
         * project_path: Generated project directory
@@ -42,7 +42,7 @@ python setup_progendef.py
         * ide_tool [uVision5 option]: UV4.exe path 
 * Flash
     ~~~
-    python numl_tool.py flash --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1 [--project_type uvision5_armc6]
+    python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1 [--project_type uvision5_armc6]
     ~~~
     * Parameter
         * project_path: Generated project directory
@@ -53,10 +53,10 @@ python setup_progendef.py
             * uvision5_armc6  
 * Deploy
     ~~~
-    python numl_tool.py deploy --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
+    python numl_tool.py deploy --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen [--project_type uvision5_armc6] [--ide_tool C:\Keil_v5\UV4\UV4.exe]
     ~~~
     * Parameter
-        * pte_file: Specify ExecuTorch PTE file which supported Arm EthosU backend
+        * pte_file: A ExecuTorch PTE file which supported Arm EthosU backend. You should follow [Arm(R) Ethos(TM)-U NPU Backend](https://docs.pytorch.org/executorch/stable/backends-arm-ethos-u.html) tutorial to convert the PTE file. The "models\mv2.pte" file is only for testing.
         * board: Supported board name  
             * NuMaker_M55M1
         * output_path: Ouput directory path of generated project
@@ -67,21 +67,21 @@ python setup_progendef.py
 ## Example
 * For make_gcc_arm
     ~~~
-    python numl_tool generate --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy
-    python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference   
-    python numl_tool.py flash --project_path ..\..\yyy\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1    
+    python numl_tool generate --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen
+    python numl_tool.py build --project_path ..\NuML_Gen\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference   
+    python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1    
     ~~~
     or
     ~~~
-    python numl_tool.py deploy --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy    
+    python numl_tool.py deploy --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen    
     ~~~
 * For uvision5_armc6
     ~~~
-    python numl_tool.py generate --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy --project_type uvision5_armc6
-    python numl_tool.py build --project_path ..\..\yyy\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe   
-    python numl_tool.py flash --project_path ..\..\yyy\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1 --project_type uvision5_armc6
+    python numl_tool.py generate --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen --project_type uvision5_armc6
+    python numl_tool.py build --project_path ..\NuML_Gen\ProjGen_NuMaker_M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe   
+    python numl_tool.py flash --project_path ..\NuML_Gen\ProjGen_NuMaker-M55M1\M55M1BSP\SampleCode\MachineLearning\NN_ModelInference --board NuMaker-M55M1 --project_type uvision5_armc6
     ~~~
     or
     ~~~
-    python numl_tool.py deploy --pte_file xxx\xxx.pte --board NuMaker-M55M1 --output_path ..\..\yyy --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
+    python numl_tool.py deploy --pte_file ..\models\mv2.pte --board NuMaker-M55M1 --output_path ..\NuML_Gen --project_type uvision5_armc6 --ide_tool C:\Keil_v5\UV4\UV4.exe
     ~~~
