@@ -88,7 +88,7 @@ def download_bsp(board_info, templates_path):
 def model_compile(board_info, output_path, vela_dir_path, model_file, model_arena_size, extra_option):
     cur_work_dir = os.getcwd()
     os.chdir(output_path)
-    vela_exe = os.path.join(vela_dir_path, 'vela-4_0_1.exe')    
+    vela_exe = os.path.join(vela_dir_path, 'vela-5_1_0.exe')    
     vela_conf_file = os.path.join(vela_dir_path, 'default_vela.ini')
     vela_conifg_option = '--config='+vela_conf_file
     print(output_path)
@@ -97,7 +97,7 @@ def model_compile(board_info, output_path, vela_dir_path, model_file, model_aren
     print(model_arena_size)
     print(vela_exe)
 
-    vela_cmd = [vela_exe, model_file, '--accelerator-config=ethos-u55-256', '--optimise=Performance', vela_conifg_option, '--memory-mode=Shared_Sram', '--system-config=Ethos_U55_High_End_Embedded', '--output-dir=.']
+    vela_cmd = [vela_exe, model_file, '--accelerator-config=ethos-u55-256', '--optimise=Performance', vela_conifg_option, '--memory-mode=Shared_Sram', '--system-config=Ethos_U55_High_End_Embedded', '--verbose-cycle-estimate', '--output-dir=.']
 
     if int(model_arena_size) > 0:
         vela_cmd.extend(['--arena-cache-size', model_arena_size])
