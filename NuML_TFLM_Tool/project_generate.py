@@ -55,12 +55,22 @@ application = {
 class CloneProgress(RemoteProgress):
     def __init__(self):
         super().__init__()
-        self.pbar = tqdm()
+        self.is_tty = sys.stderr.isatty()
+        self.pbar = tqdm() if self.is_tty else None
+        self.last_logged = None
 
     def update(self, op_code, cur_count, max_count=None, message=''):
-        self.pbar.total = max_count
-        self.pbar.n = cur_count
-        self.pbar.refresh()
+        if self.pbar is not None:
+            self.pbar.total = max_count
+            self.pbar.n = cur_count
+            self.pbar.refresh()
+        elif max_count and max_count > 0:
+            percent = int(cur_count * 100 / max_count)
+            stage = op_code & self.STAGE_MASK
+            step = (stage, percent // 10)
+            if step != self.last_logged:
+                self.last_logged = step
+                print(f'git clone progress: {percent}% ({int(cur_count)}/{int(max_count)}) {message}', flush=True)
 
 # add project generate argument parser
 def add_generate_parser(subparsers, _):
@@ -79,10 +89,12 @@ def add_generate_parser(subparsers, _):
 # download board BSP
 def download_bsp(board_info, templates_path):
     bsp_path = os.path.join(templates_path, board_info[2])
-    if os.path.isdir(bsp_path):
+    if os.path.isdir(os.path.join(bsp_path, 'Library')):
         return
-    print(f'git clone BSP {board_info[3]} {templates_path}')
-    git.Repo.clone_from(board_info[3], bsp_path, branch='master', recursive=False, progress=CloneProgress())
+    if os.path.isdir(bsp_path):
+        shutil.rmtree(bsp_path, ignore_errors=True)
+    print(f'git clone BSP {board_info[3]} {templates_path}', flush=True)
+    git.Repo.clone_from(board_info[3], bsp_path, branch='master', depth=1, recursive=False, progress=CloneProgress())
 
 # INT8 model compile by vela
 def model_compile(board_info, output_path, vela_dir_path, model_file, model_arena_size, extra_option):
